@@ -24,9 +24,12 @@ public class Exercise_1 {
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
+            System.out.println(" VertecID : "+vertexID+" vertexValue : "+vertexValue+" recieved message  :"+message+ " In Vprog");
             if (message == Integer.MAX_VALUE) {             // superstep 0
+                System.out.println(vertexValue + " start - max value");
                 return vertexValue;
-            } else {                                        // superstep > 0
+            } else { 
+                System.out.println (" maximum value which it will send : "+Math.max(vertexValue,message));  // superstep > 0
                 return Math.max(vertexValue,message);
             }
         }
@@ -35,22 +38,27 @@ public class Exercise_1 {
     private static class sendMsg extends AbstractFunction1<EdgeTriplet<Integer,Integer>, Iterator<Tuple2<Object,Integer>>> implements Serializable {
         @Override
         public Iterator<Tuple2<Object, Integer>> apply(EdgeTriplet<Integer, Integer> triplet) {
+            
             Tuple2<Object,Integer> sourceVertex = triplet.toTuple()._1();
             Tuple2<Object,Integer> dstVertex = triplet.toTuple()._2();
-
+            System.out.println(" source : "+sourceVertex+" dst vertex : "+ dstVertex +"  In sendmsg");
             if (sourceVertex._2 <= dstVertex._2) {   // source vertex value is smaller than dst vertex?
                 // do nothing
+                System.out.println(" source value :"+ sourceVertex+ " dest : " +dstVertex + " doing nothing source value is smaller than dst");
                 return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
             } else {
                 // propagate source vertex value
+                System.out.println(" source value : "+ sourceVertex+ " dest : " +dstVertex + " propagating value ");
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2)).iterator()).asScala();
             }
         }
     }
 
     private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
+        
         @Override
         public Integer apply(Integer o, Integer o2) {
+            System.out.println(" in merge doing nothing ");
             return null;
         }
     }
