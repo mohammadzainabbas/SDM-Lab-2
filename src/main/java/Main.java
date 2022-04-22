@@ -17,9 +17,12 @@ import utils.Utils;
 
 public class Main {
 
-	static String HADOOP_COMMON_PATH = "SET THE ABSOLUTE PATH OF THE RESOURCE DIRECTORY WHERE THE WINUTILS IS LOCATED"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
+	// static String HADOOP_COMMON_PATH = "SET THE ABSOLUTE PATH OF THE RESOURCE DIRECTORY WHERE THE WINUTILS IS LOCATED"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
+	static String HADOOP_COMMON_PATH = "/Users/mohammadzainabbas/Masters/UPC/Semantic Data Management/SDM-Lab-2/src/main/resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
 	
 	public static void main(String[] args) throws Exception {
+        System.out.println("Hi from main()");
+
 		System.setProperty("hadoop.home.dir", HADOOP_COMMON_PATH);
 
 		SparkConf conf = new SparkConf().setAppName("SparkGraphs_II").setMaster("local[*]");
