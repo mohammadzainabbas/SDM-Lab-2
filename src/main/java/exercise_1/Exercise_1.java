@@ -24,15 +24,14 @@ import utils.Utils;
 public class Exercise_1 {
 
     // Initial value for pregel execution
-    private static Integer INITIAL_VALUE = Integer.MIN_VALUE;
+    static final Integer INITIAL_VALUE = Integer.MIN_VALUE;
 
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-           
             Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' vertexValue: '" +  vertexValue + "' message: '" + message + "'" );
             // First superstep
-            if (message == INITIAL_VALUE) {
+            if (message.equals(INITIAL_VALUE)) {
                 Utils.print("[ VProg.apply ] First superstep -> vertexID: '" +  vertexID +  "'");
                 return vertexValue;
             } else {
