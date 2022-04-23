@@ -12,7 +12,7 @@ public class Utils {
 		Logger.getLogger("org.apache.spark.storage.BlockManager").setLevel(Level.ERROR);
 	}
 
-    public static void print(String text) {
+    public static void print(Object text) {
 		System.out.println(text);
 	}
 

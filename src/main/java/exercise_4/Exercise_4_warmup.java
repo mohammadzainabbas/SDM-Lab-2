@@ -11,11 +11,15 @@ import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
 import org.graphframes.GraphFrame;
 
+import java.util.List;
+import utils.Utils;
+
 public class Exercise_4_warmup {
 
 	
 	public static void warmup(JavaSparkContext ctx, SQLContext sqlCtx) {
-		java.util.List<Row> vertices_list = new ArrayList<Row>();
+		
+		List<Row> vertices_list = new ArrayList<Row>();
 		vertices_list.add(RowFactory.create("a", "Alice", 34));
 		vertices_list.add(RowFactory.create("b", "Bob", 36));
 		vertices_list.add(RowFactory.create("c", "Charlie", 30));
@@ -34,8 +38,6 @@ public class Exercise_4_warmup {
 		});
 		
 		Dataset<Row> vertices =  sqlCtx.createDataFrame(vertices_rdd, vertices_schema);
-		
-		
 		
 		// edges creation
 		java.util.List<Row> edges_list = new ArrayList<Row>();
@@ -62,7 +64,7 @@ public class Exercise_4_warmup {
 		
 		GraphFrame gf = GraphFrame.apply(vertices,edges);
 
-		System.out.println(gf);
+		Utils.print(gf);
 	
 		gf.edges().show();
 		gf.vertices().show();
