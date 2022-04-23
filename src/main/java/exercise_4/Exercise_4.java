@@ -1,6 +1,5 @@
 package exercise_4;
 
-import com.google.common.collect.Lists;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.Dataset;
@@ -11,8 +10,8 @@ import org.apache.spark.sql.types.MetadataBuilder;
 import org.apache.spark.sql.types.DataTypes;
 import org.apache.spark.sql.types.StructField;
 import org.apache.spark.sql.types.StructType;
-import org.graphframes.GraphFrame;
 import org.apache.spark.rdd.RDD;
+import org.graphframes.GraphFrame;
 
 import java.util.List;
 import utils.Utils;
@@ -46,20 +45,19 @@ public class Exercise_4 {
 		
 		graphFrame.edges().show();
 		graphFrame.vertices().show();
-		
+
+		// @todo: Benchmark with multiple dumping factor and numIterations
+		// --- Ideas ---
         GraphFrame gf = graphFrame.pageRank().resetProbability(0.15).maxIter(10).run();
 		
 		Utils.line_separator();
 		
 		gf.edges().show();
 		gf.vertices().show();
+		
+		Utils.line_separator();
+		Dataset<Row> topVertices = gf.vertices().sort(org.apache.spark.sql.functions.desc("pagerank"));
+		topVertices.show(10);
 
-        // org.graphframes.lib.PageRank pgRank = graph.pageRank().resetProbability(0.15).maxIter(10);
-        // GraphFrame pgRankGraph = pgRank.run(); //Run PageRank for a fixed number of iterations returning a graph with vertex attributes containing the PageRank and edge attributes the normalized edge weight.
-        
-		for (Row rname : gf.vertices().sort(org.apache.spark.sql.functions.desc("pagerank")).toJavaRDD().take(10)) {
-		    // Utils.print(rname.getString(1));
-		    Utils.print(rname);
-        }
 	}
 }
