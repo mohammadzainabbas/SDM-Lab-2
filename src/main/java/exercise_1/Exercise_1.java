@@ -23,44 +23,64 @@ import utils.Utils;
 
 public class Exercise_1 {
 
+    // Initial value for pregel execution
+    private static Integer INITIAL_VALUE = Integer.MIN_VALUE;
+
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-            System.out.println(" VertecID : "+vertexID+" vertexValue : "+vertexValue+" recieved message  :"+message+ " In Vprog");
-            if (message == Integer.MAX_VALUE) {             // superstep 0
-                System.out.println(vertexValue + " start - max value");
+           
+            Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' vertexValue: '" +  vertexValue + "' message: '" + message + "'" );
+            // First superstep
+            if (message == INITIAL_VALUE) {
+                Utils.print("[ VProg.apply ] First superstep -> vertexID: '" +  vertexID +  "'");
                 return vertexValue;
-            } else { 
-                System.out.println (" maximum value which it will send : "+Math.max(vertexValue,message));  // superstep > 0
-                return Math.max(vertexValue,message);
+            } else {
+            // Other supersteps
+                Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' will send '" + Math.max(vertexValue, message) + "' value");
+                return Math.max(vertexValue, message);
             }
         }
     }
-
+    
     private static class sendMsg extends AbstractFunction1<EdgeTriplet<Integer,Integer>, Iterator<Tuple2<Object,Integer>>> implements Serializable {
         @Override
         public Iterator<Tuple2<Object, Integer>> apply(EdgeTriplet<Integer, Integer> triplet) {
             
-            Tuple2<Object,Integer> sourceVertex = triplet.toTuple()._1();
-            Tuple2<Object,Integer> dstVertex = triplet.toTuple()._2();
-            System.out.println(" source : "+sourceVertex+" dst vertex : "+ dstVertex +"  In sendmsg");
-            if (sourceVertex._2 <= dstVertex._2) {   // source vertex value is smaller than dst vertex?
-                // do nothing
-                System.out.println(" source value :"+ sourceVertex+ " dest : " +dstVertex + " doing nothing source value is smaller than dst");
+            Long srcId = triplet.srcId();
+            Long dstId = triplet.dstId();
+            Integer srcVertex = triplet.srcAttr();
+            Integer descVertex = triplet.dstAttr();
+            
+            if ( srcVertex <= descVertex ) {
+                Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send nothing to dstId: '" + dstId + " [" + descVertex + "]'");
                 return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
             } else {
-                // propagate source vertex value
-                System.out.println(" source value : "+ sourceVertex+ " dest : " +dstVertex + " propagating value ");
-                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2)).iterator()).asScala();
+                Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + srcVertex + "' to dstId: '" + dstId + " [" + descVertex + "]'");
+                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(), srcVertex)).iterator()).asScala();
             }
+
+            
+            // Tuple2<Object,Integer> sourceVertex = triplet.toTuple()._1();
+            // Tuple2<Object,Integer> dstVertex = triplet.toTuple()._2();
+            // System.out.println(" source : "+sourceVertex+" dst vertex : "+ dstVertex +"  In sendmsg");
+            // if (sourceVertex._2 <= dstVertex._2) {   // source vertex value is smaller than dst vertex?
+            //     // do nothing
+            //     System.out.println(" source value :"+ sourceVertex+ " dest : " +dstVertex + " doing nothing source value is smaller than dst");
+            //     return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
+            // } else {
+            //     // propagate source vertex value
+            //     System.out.println(" source value : "+ sourceVertex+ " dest : " +dstVertex + " propagating value ");
+            //     return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2)).iterator()).asScala();
+            // }
         }
     }
 
     private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
         
         @Override
-        public Integer apply(Integer o, Integer o2) {
-            System.out.println(" in merge doing nothing ");
+        public Integer apply(Integer msg1, Integer msg2) {
+            Utils.print("[ merge.apply ] msg1: '" +  msg1 + "' msg2: '" + msg2 + "' -- do nothing");
             return null;
         }
     }
@@ -102,9 +122,9 @@ public class Exercise_1 {
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         Utils.log("Run pregel over our graph with apply, scatter and gather functions");
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#pregel-A-int-org.apache.spark.graphx.EdgeDirection-scala.Function3-scala.Function1-scala.Function2-scala.reflect.ClassTag-
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#pregel-A-int-org.apache.spark.graphx.EdgeDirection-scala.Function3-scala.Function1-scala.Function2-scala.reflect.ClassTag-
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/EdgeDirection.html
-        Graph<Integer, Integer> output_graph = ops.pregel(Integer.MIN_VALUE, Integer.MAX_VALUE, EdgeDirection.Out(), new VProg(), new sendMsg(), new merge(), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        Graph<Integer, Integer> output_graph = ops.pregel(INITIAL_VALUE, Integer.MAX_VALUE, EdgeDirection.Out(), new VProg(), new sendMsg(), new merge(), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
         
         Utils.log("Get output graphs' vertices");
         //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#vertices--
