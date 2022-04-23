@@ -75,7 +75,6 @@ public class Exercise_3 {
             Integer weight = triplet.attr();
 
             String srcNode = labels.get(srcId);
-            // String dstNode = labels.get(dstId);
 
             Vertex srcVertex = triplet.srcAttr();
             Vertex descVertex = triplet.dstAttr();
@@ -86,9 +85,7 @@ public class Exercise_3 {
             } else {
                 List<String> srcList = new ArrayList<String>(srcVertex._2);
                 srcList.add(srcNode);
-                // srcList.add(dstNode);
                 Vertex value_to_send = new Vertex(srcVertex._1 + weight, srcList);
-                // Vertex value_to_send = srcVertex + weight;
                 Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + value_to_send._1 + "' to dstId: '" + dstId + " [" + descVertex + "]'");
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Vertex>(triplet.dstId(), value_to_send)).iterator()).asScala();
             }
