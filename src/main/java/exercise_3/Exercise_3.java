@@ -163,10 +163,9 @@ public class Exercise_3 {
                 Integer cost = value._1;
                 List<String> path = value._2;
                 String descLabel = labels.get(vertexId);
-                path.add(descLabel);
+                path.add(descLabel); // Add last destination node's label
 
                 Utils.print("Shortest path to get from '" + srcLabel + "' to '" + descLabel + "' is " + path + " with cost " + cost);
             });
-    }
-	
+    }	
 }
