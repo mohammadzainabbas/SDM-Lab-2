@@ -66,8 +66,8 @@ public class Exercise_2 {
 
     private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
         @Override
-        public Integer apply(Integer o, Integer o2) {
-            System.out.println(" Integer o :"+o+ " Interger o2 : "+ o2);
+        public Integer apply(Integer msg1, Integer msg2) {
+            Utils.print("[ merge.apply ] msg1: '" +  msg1 + "' msg2: '" + msg2 + "' -- do nothing");
             return null;
         }
     }
