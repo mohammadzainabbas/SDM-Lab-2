@@ -48,7 +48,8 @@ public class Exercise_4 {
 
 		// @todo: Benchmark with multiple dumping factor and numIterations
 		// --- Ideas ---
-        GraphFrame gf = graphFrame.pageRank().resetProbability(0.15).maxIter(10).run();
+		// 1. Define some dumping factors and numIterations and run & time pagerank algo. and select the best  
+		GraphFrame gf = graphFrame.pageRank().resetProbability(0.15).maxIter(10).run();
 		
 		Utils.line_separator();
 		
