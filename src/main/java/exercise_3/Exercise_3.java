@@ -138,9 +138,9 @@ public class Exercise_3 {
 
         Utils.log("Create Graph from vertices and edges");
         Graph<Vertex, Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(), new Vertex(), StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
-                scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+                scala.reflect.ClassTag$.MODULE$.apply(Vertex.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
-        GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Vertex.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         String srcLabel = labels.get(1l);
 
@@ -154,7 +154,7 @@ public class Exercise_3 {
             new VProg(),
             new sendMsg(),
             new merge(),
-            ClassTag$.MODULE$.apply(Integer.class))
+            ClassTag$.MODULE$.apply(Vertex.class))
             .vertices()
             .toJavaRDD();
             
