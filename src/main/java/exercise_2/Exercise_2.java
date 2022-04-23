@@ -5,7 +5,6 @@ import com.google.common.collect.Lists;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.graphx.*;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 import scala.collection.Iterator;
@@ -14,7 +13,6 @@ import scala.reflect.ClassTag$;
 import scala.runtime.AbstractFunction1;
 import scala.runtime.AbstractFunction2;
 import scala.runtime.AbstractFunction3;
-import spire.syntax.primitives;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -48,19 +46,20 @@ public class Exercise_2 {
     private static class sendMsg extends AbstractFunction1<EdgeTriplet<Integer,Integer>, Iterator<Tuple2<Object,Integer>>> implements Serializable {
         @Override
         public Iterator<Tuple2<Object, Integer>> apply(EdgeTriplet<Integer, Integer> triplet) {
-            Tuple2<Object,Integer> sourceVertex = triplet.toTuple()._1();
-            System.out.println("sourceVertex : "+sourceVertex._2() +" edge value :"+ triplet.attr());
-            //EdgeTriplet<Integer,Integer> edge =;
-            
-            if (sourceVertex._2() == Integer.MAX_VALUE){
-                //if vertex isn't active do nothing
-                return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
 
-            }
-            else {
-                // propagate source vertex value+ edge value
-                System.out.println(" source value : "+ sourceVertex._2+triplet.attr());
-                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2+triplet.attr())).iterator()).asScala();
+            Long srcId = triplet.srcId();
+            Long dstId = triplet.dstId();
+            Integer weight = triplet.attr();
+            Integer srcVertex = triplet.srcAttr();
+            Integer descVertex = triplet.dstAttr();
+            
+            if ( srcVertex.equals(INITIAL_VALUE) ) {
+                Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send nothing to dstId: '" + dstId + " [" + descVertex + "]'");
+                return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
+            } else {
+                Integer value_to_send = srcVertex + weight;
+                Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + value_to_send + "' to dstId: '" + dstId + " [" + descVertex + "]'");
+                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(), value_to_send)).iterator()).asScala();
             }
         }
     }
@@ -74,6 +73,7 @@ public class Exercise_2 {
     }
 
 	public static void shortestPaths(JavaSparkContext ctx) {
+        Utils.log("Create labels, vertices and edges");
         Map<Long, String> labels = ImmutableMap.<Long, String>builder()
                 .put(1l, "A")
                 .put(2l, "B")
@@ -101,26 +101,44 @@ public class Exercise_2 {
                 new Edge<Integer>(4l, 6l, 11) // D --> F (11)
         );
 
+        Utils.log("Create RDD for vertices and edges");
         JavaRDD<Tuple2<Object,Integer>> verticesRDD = ctx.parallelize(vertices);
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
 
+        Utils.log("Create Graph from vertices and edges");
         Graph<Integer,Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(),1, StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
                 scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
-        ops.pregel(Integer.MAX_VALUE,
-                Integer.MAX_VALUE,
-                EdgeDirection.Out(),
-                new VProg(),
-                new sendMsg(),
-                new merge(),
-                ClassTag$.MODULE$.apply(Integer.class))
+        String srcLabel = labels.get(1l);
+
+        Utils.log("Run pregel over our graph with apply, scatter and gather functions");
+        Utils.line_separator();
+        
+        JavaRDD<Tuple2<Object,Integer>> output_rdd = ops.pregel(
+            INITIAL_VALUE,
+            Integer.MAX_VALUE,
+            EdgeDirection.Out(),
+            new VProg(),
+            new sendMsg(),
+            new merge(),
+            ClassTag$.MODULE$.apply(Integer.class))
             .vertices()
-            .toJavaRDD().sortBy(f -> ((Tuple2<Object, Integer>) f)._1, true, 0)
+            .toJavaRDD();
+            
+        Utils.line_separator();
+        
+        output_rdd
+            .sortBy(f -> ((Tuple2<Object, Integer>) f)._1, true, 0)
             .foreach(v -> {
-                Tuple2<Object,Integer> vertex = (Tuple2<Object,Integer>)v;
-                System.out.println("Minimum cost to get from "+labels.get(1l)+" to "+labels.get(vertex._1)+" is "+vertex._2);
+
+                Tuple2<Object,Integer> vertex = (Tuple2<Object,Integer>) v;
+                Long vertexId = (Long) vertex._1;
+                Integer cost = (Integer) vertex._2;
+                String descLabel = labels.get(vertexId);
+
+                Utils.print("Minimum cost to get from '" + srcLabel + "' to '" + descLabel + "' is " + cost);
             });
 	}
 	
