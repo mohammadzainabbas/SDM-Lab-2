@@ -22,15 +22,13 @@ import java.util.List;
 import java.util.Map;
 
 import utils.Utils;
-
+import exercise_3.Vertex;
 
 public class Exercise_3 {
     
-    public class Vertex extends Tuple2<Integer, List<String>> {
-        public Vertex() {}
-    }
     // Initial value for pregel execution
-    static final Tuple2<Integer, List<String>> INITIAL_VALUE = new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>());
+    // static final Tuple2<Integer, List<String>> INITIAL_VALUE = new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>());
+    static final Vertex INITIAL_VALUE = new Vertex(Integer.MAX_VALUE);
 
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
@@ -144,15 +142,17 @@ public class Exercise_3 {
         Utils.line_separator();
         
         output_rdd
-            .sortBy(f -> ((Tuple2<Object, Integer>) f)._1, true, 0)
+            .sortBy(f -> ((Tuple2<Object, Tuple2<Integer, List<String>>>) f)._1, true, 0)
             .foreach(v -> {
 
-                Tuple2<Object,Integer> vertex = (Tuple2<Object,Integer>) v;
+                Tuple2<Object, Tuple2<Integer, List<String>>> vertex = (Tuple2<Object, Tuple2<Integer, List<String>>>) v;
                 Long vertexId = (Long) vertex._1;
-                Integer cost = (Integer) vertex._2;
+                Tuple2<Integer, List<String>> value = (Tuple2<Integer, List<String>>) vertex._2;
+                Integer cost = value._1;
+                List<String> path = value._2;
                 String descLabel = labels.get(vertexId);
 
-                Utils.print("Minimum cost to get from '" + srcLabel + "' to '" + descLabel + "' is " + cost);
+                Utils.print("Shortest path to get from '" + srcLabel + "' to '" + descLabel + "' is " + path + " with cost " + cost);
             });
     }
 	
