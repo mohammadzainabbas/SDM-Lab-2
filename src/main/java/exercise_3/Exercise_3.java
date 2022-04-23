@@ -44,10 +44,11 @@ public class Exercise_3 {
         @Override
         public Vertex apply(Long vertexID, Vertex vertexValue, Vertex message) {
 
+            String node = labels.get(vertexID);
             Integer nodeCost = vertexValue._1;
             Integer incomingCost = message._1;
 
-            Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' vertexValue: '" +  nodeCost + "' message: '" + incomingCost + "'" );
+            Utils.print("[ VProg.apply ] node: '" + node + "' vertexID: '" +  vertexID +  "' vertexValue: '" +  nodeCost + "' message: '" + incomingCost + "'" );
             // First superstep
             if (message.equals(INITIAL_VALUE)) {
                 Utils.print("[ VProg.apply ] First superstep -> vertexID: '" +  vertexID +  "'");
@@ -72,6 +73,10 @@ public class Exercise_3 {
             Long srcId = triplet.srcId();
             Long dstId = triplet.dstId();
             Integer weight = triplet.attr();
+
+            String srcNode = labels.get(srcId);
+            // String dstNode = labels.get(dstId);
+
             Vertex srcVertex = triplet.srcAttr();
             Vertex descVertex = triplet.dstAttr();
             
@@ -79,7 +84,10 @@ public class Exercise_3 {
                 Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send nothing to dstId: '" + dstId + " [" + descVertex + "]'");
                 return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Vertex>>().iterator()).asScala();
             } else {
-                Vertex value_to_send = new Vertex(srcVertex._1 + weight);
+                List<String> srcList = new ArrayList<String>(srcVertex._2);
+                srcList.add(srcNode);
+                // srcList.add(dstNode);
+                Vertex value_to_send = new Vertex(srcVertex._1 + weight, srcList);
                 // Vertex value_to_send = srcVertex + weight;
                 Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + value_to_send._1 + "' to dstId: '" + dstId + " [" + descVertex + "]'");
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Vertex>(triplet.dstId(), value_to_send)).iterator()).asScala();
@@ -155,6 +163,7 @@ public class Exercise_3 {
                 Integer cost = value._1;
                 List<String> path = value._2;
                 String descLabel = labels.get(vertexId);
+                path.add(descLabel);
 
                 Utils.print("Shortest path to get from '" + srcLabel + "' to '" + descLabel + "' is " + path + " with cost " + cost);
             });
