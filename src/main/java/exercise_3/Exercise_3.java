@@ -29,6 +29,16 @@ public class Exercise_3 {
     // Initial value for pregel execution
     // static final Tuple2<Integer, List<String>> INITIAL_VALUE = new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>());
     static final Vertex INITIAL_VALUE = new Vertex(Integer.MAX_VALUE);
+    
+    // Nodes' Labels 
+    static final Map<Long, String> labels = ImmutableMap.<Long, String>builder()
+            .put(1l, "A")
+            .put(2l, "B")
+            .put(3l, "C")
+            .put(4l, "D")
+            .put(5l, "E")
+            .put(6l, "F")
+            .build();
 
     private static class VProg extends AbstractFunction3<Long,Vertex,Vertex,Vertex> implements Serializable {
         @Override
@@ -87,14 +97,6 @@ public class Exercise_3 {
 
     public static void shortestPathsExt(JavaSparkContext ctx) {
         Utils.log("Create labels, vertices and edges");
-        Map<Long, String> labels = ImmutableMap.<Long, String>builder()
-                .put(1l, "A")
-                .put(2l, "B")
-                .put(3l, "C")
-                .put(4l, "D")
-                .put(5l, "E")
-                .put(6l, "F")
-                .build();
 
         List<Tuple2<Object, Vertex>> vertices = Lists.newArrayList(
             new Tuple2<Object, Vertex>(1l, new Vertex(0)),
@@ -104,24 +106,7 @@ public class Exercise_3 {
             new Tuple2<Object, Vertex>(5l, new Vertex(Integer.MAX_VALUE)),
             new Tuple2<Object, Vertex>(6l, new Vertex(Integer.MAX_VALUE))
         );
-
-        // List<Tuple2<Object, Tuple2<Integer, List<String>>>> vertices = Lists.newArrayList(
-        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(1l, new Tuple2<Integer, List<String>>(0, new ArrayList<String>())),
-        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(2l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(3l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(4l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(5l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(6l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>()))
-        // );
-
-        // List<Tuple2<Object,Integer>> vertices = Lists.newArrayList(
-        //         new Tuple2<Object,Integer>(1l,0),
-        //         new Tuple2<Object,Integer>(2l,Integer.MAX_VALUE),
-        //         new Tuple2<Object,Integer>(3l,Integer.MAX_VALUE),
-        //         new Tuple2<Object,Integer>(4l,Integer.MAX_VALUE),
-        //         new Tuple2<Object,Integer>(5l,Integer.MAX_VALUE),
-        //         new Tuple2<Object,Integer>(6l,Integer.MAX_VALUE)
-        // );
+        
         List<Edge<Integer>> edges = Lists.newArrayList(
                 new Edge<Integer>(1l,2l, 4), // A --> B (4)
                 new Edge<Integer>(1l,3l, 2), // A --> C (2)
