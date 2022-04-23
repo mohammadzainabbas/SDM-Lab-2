@@ -77,9 +77,9 @@ public class Exercise_3 {
         }
     }
 
-    private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
+    private static class merge extends AbstractFunction2<Vertex,Vertex,Vertex> implements Serializable {
         @Override
-        public Integer apply(Integer msg1, Integer msg2) {
+        public Vertex apply(Vertex msg1, Vertex msg2) {
             Utils.print("[ merge.apply ] msg1: '" +  msg1 + "' msg2: '" + msg2 + "' -- do nothing");
             return null;
         }
