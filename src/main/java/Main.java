@@ -21,22 +21,21 @@ public class Main {
 	static String HADOOP_COMMON_PATH = "/root/SDM-Lab-2/src/main/resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
 	
 	public static void main(String[] args) throws Exception {
-        System.out.println("Hi from main()");
+        Utils.print("Hi from main()");
 
 		System.setProperty("hadoop.home.dir", HADOOP_COMMON_PATH);
 
 		SparkConf conf = new SparkConf().setAppName("SparkGraphs_II").setMaster("local[*]");
-        System.out.println("Before spark context");
+        Utils.print("Before spark context");
         SparkContext sparkContext = new SparkContext(conf);
-        System.out.println("After spark context");
+        Utils.print("After spark context");
         JavaSparkContext ctx = new JavaSparkContext(sparkContext);
 		ctx.setCheckpointDir(Files.createTempDir().getAbsolutePath());
 		
 		SQLContext sqlctx = new SQLContext(ctx);
 		
         Logger.getLogger("org.apache.spark").setLevel(Level.WARN);
-        Logger.getLogger("org.apache.spark.storage.BlockManager").setLevel(
-                Level.ERROR);
+        Logger.getLogger("org.apache.spark.storage.BlockManager").setLevel(Level.ERROR);
 
 		if (args.length != 1) throw new Exception("Parameter expected: exercise number");
 
