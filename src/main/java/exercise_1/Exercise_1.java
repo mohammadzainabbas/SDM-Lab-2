@@ -4,8 +4,6 @@ import com.google.common.collect.Lists;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.graphx.*;
-import org.apache.spark.sql.Row;
-import org.apache.spark.sql.SQLContext;
 import org.apache.spark.storage.StorageLevel;
 import scala.Tuple2;
 import scala.collection.Iterator;
@@ -58,20 +56,6 @@ public class Exercise_1 {
                 Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + srcVertex + "' to dstId: '" + dstId + " [" + descVertex + "]'");
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(), srcVertex)).iterator()).asScala();
             }
-
-            
-            // Tuple2<Object,Integer> sourceVertex = triplet.toTuple()._1();
-            // Tuple2<Object,Integer> dstVertex = triplet.toTuple()._2();
-            // System.out.println(" source : "+sourceVertex+" dst vertex : "+ dstVertex +"  In sendmsg");
-            // if (sourceVertex._2 <= dstVertex._2) {   // source vertex value is smaller than dst vertex?
-            //     // do nothing
-            //     System.out.println(" source value :"+ sourceVertex+ " dest : " +dstVertex + " doing nothing source value is smaller than dst");
-            //     return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
-            // } else {
-            //     // propagate source vertex value
-            //     System.out.println(" source value : "+ sourceVertex+ " dest : " +dstVertex + " propagating value ");
-            //     return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2)).iterator()).asScala();
-            // }
         }
     }
 
@@ -109,15 +93,15 @@ public class Exercise_1 {
         JavaRDD<Tuple2<Object,Integer>> verticesRDD = ctx.parallelize(vertices);
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
         
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#apply-org.apache.spark.rdd.RDD-org.apache.spark.rdd.RDD-VD-org.apache.spark.storage.StorageLevel-org.apache.spark.storage.StorageLevel-scala.reflect.ClassTag-scala.reflect.ClassTag-
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/storage/StorageLevel.html
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#apply-org.apache.spark.rdd.RDD-org.apache.spark.rdd.RDD-VD-org.apache.spark.storage.StorageLevel-org.apache.spark.storage.StorageLevel-scala.reflect.ClassTag-scala.reflect.ClassTag-
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/storage/StorageLevel.html
         //Construct a graph from a collection of vertices and edges with attributes. Duplicate vertices are picked arbitrarily and vertices found in the edge collection but not in the input vertices are assigned the default attribute.
         Utils.log("Create Graph from vertices and edges");
         Graph<Integer,Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(),1, StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
         scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
         
         Utils.log("Create graph operations' object");
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#GraphOps-org.apache.spark.graphx.Graph-scala.reflect.ClassTag-scala.reflect.ClassTag-
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#GraphOps-org.apache.spark.graphx.Graph-scala.reflect.ClassTag-scala.reflect.ClassTag-
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         Utils.log("Run pregel over our graph with apply, scatter and gather functions");
@@ -126,30 +110,16 @@ public class Exercise_1 {
         Graph<Integer, Integer> output_graph = ops.pregel(INITIAL_VALUE, Integer.MAX_VALUE, EdgeDirection.Out(), new VProg(), new sendMsg(), new merge(), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
         
         Utils.log("Get output graphs' vertices");
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#vertices--
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#vertices--
         VertexRDD<Integer> output_vertices = output_graph.vertices();
         Utils.print("Output graph has '" + output_vertices.count() + "' vertices");
         
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/rdd/RDD.html#toJavaRDD--
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/rdd/RDD.html#toJavaRDD--
         JavaRDD<Tuple2<Object,Integer>> output_rdd = output_vertices.toJavaRDD();
         
-        //https://spark.apache.org/docs/latest/api/java/org/apache/spark/api/java/JavaRDDLike.html#first--
+        // https://spark.apache.org/docs/latest/api/java/org/apache/spark/api/java/JavaRDDLike.html#first--
         Tuple2<Object,Integer> max_value = output_rdd.first();
 
         Utils.print("Vertex '" + max_value._1 + "' has the maximum value in the graph '" + max_value._2 + "'");
-
-
-        // Tuple2<Long,Integer> max = (Tuple2<Long,Integer>)ops.pregel(
-        //         Integer.MAX_VALUE,
-        //         Integer.MAX_VALUE,      // Run until convergence
-        //         EdgeDirection.Out(),
-        //         new VProg(),
-        //         new sendMsg(),
-        //         new merge(),
-        //         scala.reflect.ClassTag$.MODULE$.apply(Integer.class))
-        // .vertices().toJavaRDD().first();
-
-        // System.out.println(max._2 + " is the maximum value in the graph");
-	}
-	
+	}	
 }
