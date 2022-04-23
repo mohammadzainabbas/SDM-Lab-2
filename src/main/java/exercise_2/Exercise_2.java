@@ -22,18 +22,25 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import utils.Utils;
+
 public class Exercise_2 {
+
+    // Initial value for pregel execution
+    static final Integer INITIAL_VALUE = Integer.MAX_VALUE;
 
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-            System.out.println(" vertexID : "+vertexID+" vertex value : "+ vertexValue +" message : "+ message +"  In sendmsg");
-            if (message == Integer.MAX_VALUE) {             // superstep 0
-                System.out.println(vertexValue + " start - max value");
+            Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' vertexValue: '" +  vertexValue + "' message: '" + message + "'" );
+            // First superstep
+            if (message.equals(INITIAL_VALUE)) {
+                Utils.print("[ VProg.apply ] First superstep -> vertexID: '" +  vertexID +  "'");
                 return vertexValue;
-            } else { 
-                System.out.println (" minimum value : "+Math.min(vertexValue,message));  // superstep > 0
-                return Math.min(vertexValue,message);
+            } else {
+            // Other supersteps
+                Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' will send '" + Math.min(vertexValue, message) + "' value");
+                return Math.min(vertexValue, message);
             }
         }
     }
