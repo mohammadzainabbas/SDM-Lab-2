@@ -13,6 +13,7 @@ import scala.reflect.ClassTag$;
 import scala.runtime.AbstractFunction1;
 import scala.runtime.AbstractFunction2;
 import scala.runtime.AbstractFunction3;
+import shapeless.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -22,11 +23,14 @@ import java.util.Map;
 
 import utils.Utils;
 
+
 public class Exercise_3 {
-
-
+    
+    public class Vertex extends Tuple2<Integer, List<String>> {
+        public Vertex() {}
+    }
     // Initial value for pregel execution
-    static final Integer INITIAL_VALUE = Integer.MAX_VALUE;
+    static final Tuple2<Integer, List<String>> INITIAL_VALUE = new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>());
 
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
@@ -84,14 +88,23 @@ public class Exercise_3 {
                 .put(6l, "F")
                 .build();
 
-        List<Tuple2<Object,Integer>> vertices = Lists.newArrayList(
-                new Tuple2<Object,Integer>(1l,0),
-                new Tuple2<Object,Integer>(2l,Integer.MAX_VALUE),
-                new Tuple2<Object,Integer>(3l,Integer.MAX_VALUE),
-                new Tuple2<Object,Integer>(4l,Integer.MAX_VALUE),
-                new Tuple2<Object,Integer>(5l,Integer.MAX_VALUE),
-                new Tuple2<Object,Integer>(6l,Integer.MAX_VALUE)
+        List<Tuple2<Object, Tuple2<Integer, List<String>>>> vertices = Lists.newArrayList(
+            new Tuple2<Object, Tuple2<Integer, List<String>>>(1l, new Tuple2<Integer, List<String>>(0, new ArrayList<String>())),
+            new Tuple2<Object, Tuple2<Integer, List<String>>>(2l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+            new Tuple2<Object, Tuple2<Integer, List<String>>>(3l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+            new Tuple2<Object, Tuple2<Integer, List<String>>>(4l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+            new Tuple2<Object, Tuple2<Integer, List<String>>>(5l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+            new Tuple2<Object, Tuple2<Integer, List<String>>>(6l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>()))
         );
+
+        // List<Tuple2<Object,Integer>> vertices = Lists.newArrayList(
+        //         new Tuple2<Object,Integer>(1l,0),
+        //         new Tuple2<Object,Integer>(2l,Integer.MAX_VALUE),
+        //         new Tuple2<Object,Integer>(3l,Integer.MAX_VALUE),
+        //         new Tuple2<Object,Integer>(4l,Integer.MAX_VALUE),
+        //         new Tuple2<Object,Integer>(5l,Integer.MAX_VALUE),
+        //         new Tuple2<Object,Integer>(6l,Integer.MAX_VALUE)
+        // );
         List<Edge<Integer>> edges = Lists.newArrayList(
                 new Edge<Integer>(1l,2l, 4), // A --> B (4)
                 new Edge<Integer>(1l,3l, 2), // A --> C (2)
@@ -108,16 +121,16 @@ public class Exercise_3 {
 
         Utils.log("Create Graph from vertices and edges");
         Graph<Integer,Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(),1, StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
-                scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+                scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
-        GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         String srcLabel = labels.get(1l);
 
         Utils.log("Run pregel over our graph with apply, scatter and gather functions");
         Utils.line_separator();
         
-        JavaRDD<Tuple2<Object,Integer>> output_rdd = ops.pregel(
+        JavaRDD<Tuple2<Object, Tuple2<Integer, List<String>>>> output_rdd = ops.pregel(
             INITIAL_VALUE,
             Integer.MAX_VALUE,
             EdgeDirection.Out(),
