@@ -104,11 +104,13 @@ public class Exercise_1 {
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#GraphOps-org.apache.spark.graphx.Graph-scala.reflect.ClassTag-scala.reflect.ClassTag-
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
+        Utils.line_separator();
         Utils.log("Run pregel over our graph with apply, scatter and gather functions");
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#pregel-A-int-org.apache.spark.graphx.EdgeDirection-scala.Function3-scala.Function1-scala.Function2-scala.reflect.ClassTag-
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/EdgeDirection.html
         Graph<Integer, Integer> output_graph = ops.pregel(INITIAL_VALUE, Integer.MAX_VALUE, EdgeDirection.Out(), new VProg(), new sendMsg(), new merge(), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
         
+        Utils.line_separator();
         Utils.log("Get output graphs' vertices");
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#vertices--
         VertexRDD<Integer> output_vertices = output_graph.vertices();
