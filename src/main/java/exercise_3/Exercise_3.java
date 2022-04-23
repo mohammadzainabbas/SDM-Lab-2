@@ -30,39 +30,49 @@ public class Exercise_3 {
     // static final Tuple2<Integer, List<String>> INITIAL_VALUE = new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>());
     static final Vertex INITIAL_VALUE = new Vertex(Integer.MAX_VALUE);
 
-    private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
+    private static class VProg extends AbstractFunction3<Long,Vertex,Vertex,Vertex> implements Serializable {
         @Override
-        public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-            Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' vertexValue: '" +  vertexValue + "' message: '" + message + "'" );
+        public Vertex apply(Long vertexID, Vertex vertexValue, Vertex message) {
+
+            Integer nodeCost = vertexValue._1;
+            Integer incomingCost = message._1;
+
+            Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' vertexValue: '" +  nodeCost + "' message: '" + incomingCost + "'" );
             // First superstep
             if (message.equals(INITIAL_VALUE)) {
                 Utils.print("[ VProg.apply ] First superstep -> vertexID: '" +  vertexID +  "'");
                 return vertexValue;
             } else {
             // Other supersteps
-                Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' will send '" + Math.min(vertexValue, message) + "' value");
-                return Math.min(vertexValue, message);
+                Utils.print("[ VProg.apply ] vertexID: '" +  vertexID +  "' will send '" + Math.min(nodeCost, incomingCost) + "' value");
+                
+                if (nodeCost >= incomingCost) {
+                    return message;
+                } else {
+                    return vertexValue;
+                }
             }
         }
     }
 
-    private static class sendMsg extends AbstractFunction1<EdgeTriplet<Integer,Integer>, Iterator<Tuple2<Object,Integer>>> implements Serializable {
+    private static class sendMsg extends AbstractFunction1<EdgeTriplet<Vertex,Integer>, Iterator<Tuple2<Object,Vertex>>> implements Serializable {
         @Override
-        public Iterator<Tuple2<Object, Integer>> apply(EdgeTriplet<Integer, Integer> triplet) {
+        public Iterator<Tuple2<Object, Vertex>> apply(EdgeTriplet<Vertex, Integer> triplet) {
 
             Long srcId = triplet.srcId();
             Long dstId = triplet.dstId();
             Integer weight = triplet.attr();
-            Integer srcVertex = triplet.srcAttr();
-            Integer descVertex = triplet.dstAttr();
+            Vertex srcVertex = triplet.srcAttr();
+            Vertex descVertex = triplet.dstAttr();
             
             if ( srcVertex.equals(INITIAL_VALUE) ) {
                 Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send nothing to dstId: '" + dstId + " [" + descVertex + "]'");
-                return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
+                return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Vertex>>().iterator()).asScala();
             } else {
-                Integer value_to_send = srcVertex + weight;
-                Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + value_to_send + "' to dstId: '" + dstId + " [" + descVertex + "]'");
-                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(), value_to_send)).iterator()).asScala();
+                Vertex value_to_send = new Vertex(srcVertex._1 + weight);
+                // Vertex value_to_send = srcVertex + weight;
+                Utils.print("[ sendMsg.apply ] srcId: '" +  srcId +  " [" + srcVertex + "]' will send '" + value_to_send._1 + "' to dstId: '" + dstId + " [" + descVertex + "]'");
+                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Vertex>(triplet.dstId(), value_to_send)).iterator()).asScala();
             }
         }
     }
@@ -86,14 +96,23 @@ public class Exercise_3 {
                 .put(6l, "F")
                 .build();
 
-        List<Tuple2<Object, Tuple2<Integer, List<String>>>> vertices = Lists.newArrayList(
-            new Tuple2<Object, Tuple2<Integer, List<String>>>(1l, new Tuple2<Integer, List<String>>(0, new ArrayList<String>())),
-            new Tuple2<Object, Tuple2<Integer, List<String>>>(2l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-            new Tuple2<Object, Tuple2<Integer, List<String>>>(3l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-            new Tuple2<Object, Tuple2<Integer, List<String>>>(4l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-            new Tuple2<Object, Tuple2<Integer, List<String>>>(5l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
-            new Tuple2<Object, Tuple2<Integer, List<String>>>(6l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>()))
+        List<Tuple2<Object, Vertex>> vertices = Lists.newArrayList(
+            new Tuple2<Object, Vertex>(1l, new Vertex(0)),
+            new Tuple2<Object, Vertex>(2l, new Vertex(Integer.MAX_VALUE)),
+            new Tuple2<Object, Vertex>(3l, new Vertex(Integer.MAX_VALUE)),
+            new Tuple2<Object, Vertex>(4l, new Vertex(Integer.MAX_VALUE)),
+            new Tuple2<Object, Vertex>(5l, new Vertex(Integer.MAX_VALUE)),
+            new Tuple2<Object, Vertex>(6l, new Vertex(Integer.MAX_VALUE))
         );
+
+        // List<Tuple2<Object, Tuple2<Integer, List<String>>>> vertices = Lists.newArrayList(
+        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(1l, new Tuple2<Integer, List<String>>(0, new ArrayList<String>())),
+        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(2l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(3l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(4l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(5l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>())),
+        //     new Tuple2<Object, Tuple2<Integer, List<String>>>(6l, new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>()))
+        // );
 
         // List<Tuple2<Object,Integer>> vertices = Lists.newArrayList(
         //         new Tuple2<Object,Integer>(1l,0),
@@ -114,11 +133,11 @@ public class Exercise_3 {
         );
 
         Utils.log("Create RDD for vertices and edges");
-        JavaRDD<Tuple2<Object,Integer>> verticesRDD = ctx.parallelize(vertices);
+        JavaRDD<Tuple2<Object, Vertex>> verticesRDD = ctx.parallelize(vertices);
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
 
         Utils.log("Create Graph from vertices and edges");
-        Graph<Integer,Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(),1, StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
+        Graph<Vertex, Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(), new Vertex(), StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
                 scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Tuple2.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
@@ -128,7 +147,7 @@ public class Exercise_3 {
         Utils.log("Run pregel over our graph with apply, scatter and gather functions");
         Utils.line_separator();
         
-        JavaRDD<Tuple2<Object, Tuple2<Integer, List<String>>>> output_rdd = ops.pregel(
+        JavaRDD<Tuple2<Object, Vertex>> output_rdd = ops.pregel(
             INITIAL_VALUE,
             Integer.MAX_VALUE,
             EdgeDirection.Out(),
@@ -142,12 +161,12 @@ public class Exercise_3 {
         Utils.line_separator();
         
         output_rdd
-            .sortBy(f -> ((Tuple2<Object, Tuple2<Integer, List<String>>>) f)._1, true, 0)
+            .sortBy(f -> ((Tuple2<Object, Vertex>) f)._1, true, 0)
             .foreach(v -> {
 
-                Tuple2<Object, Tuple2<Integer, List<String>>> vertex = (Tuple2<Object, Tuple2<Integer, List<String>>>) v;
+                Tuple2<Object, Vertex> vertex = (Tuple2<Object, Vertex>) v;
                 Long vertexId = (Long) vertex._1;
-                Tuple2<Integer, List<String>> value = (Tuple2<Integer, List<String>>) vertex._2;
+                Vertex value = (Vertex) vertex._2;
                 Integer cost = value._1;
                 List<String> path = value._2;
                 String descLabel = labels.get(vertexId);
