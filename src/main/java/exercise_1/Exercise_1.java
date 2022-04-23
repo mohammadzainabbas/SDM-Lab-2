@@ -60,7 +60,6 @@ public class Exercise_1 {
     }
 
     private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
-        
         @Override
         public Integer apply(Integer msg1, Integer msg2) {
             Utils.print("[ merge.apply ] msg1: '" +  msg1 + "' msg2: '" + msg2 + "' -- do nothing");
@@ -72,7 +71,7 @@ public class Exercise_1 {
         // https://github.com/google/guava/wiki/CollectionUtilitiesExplained#static-constructors
         // doc for Lists.newArrayList -> https://guava.dev/releases/19.0/api/docs/com/google/common/collect/Lists.html
         // doc for Tuple2 -> https://www.scala-lang.org/api/2.12.2/scala/Tuple2.html
-        Utils.log("Create Vertices and edges");
+        Utils.log("Create vertices and edges");
         List<Tuple2<Object,Integer>> vertices = Lists.newArrayList(
             new Tuple2<Object,Integer>(1l,9),
             new Tuple2<Object,Integer>(2l,1),
@@ -105,10 +104,12 @@ public class Exercise_1 {
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
         Utils.log("Run pregel over our graph with apply, scatter and gather functions");
+        Utils.line_separator();
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#pregel-A-int-org.apache.spark.graphx.EdgeDirection-scala.Function3-scala.Function1-scala.Function2-scala.reflect.ClassTag-
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/EdgeDirection.html
         Graph<Integer, Integer> output_graph = ops.pregel(INITIAL_VALUE, Integer.MAX_VALUE, EdgeDirection.Out(), new VProg(), new sendMsg(), new merge(), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
         
+        Utils.line_separator();
         Utils.log("Get output graphs' vertices");
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#vertices--
         VertexRDD<Integer> output_vertices = output_graph.vertices();
