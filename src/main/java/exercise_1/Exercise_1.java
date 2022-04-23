@@ -69,6 +69,7 @@ public class Exercise_1 {
         // https://github.com/google/guava/wiki/CollectionUtilitiesExplained#static-constructors
         // doc for Lists.newArrayList -> https://guava.dev/releases/19.0/api/docs/com/google/common/collect/Lists.html
         // doc for Tuple2 -> https://www.scala-lang.org/api/2.12.2/scala/Tuple2.html
+        Utils.log("Create Vertices and edges");
         List<Tuple2<Object,Integer>> vertices = Lists.newArrayList(
             new Tuple2<Object,Integer>(1l,9),
             new Tuple2<Object,Integer>(2l,1),
@@ -82,25 +83,30 @@ public class Exercise_1 {
             new Edge<Integer>(2l,4l, 1),
             new Edge<Integer>(3l,4l, 1),
             new Edge<Integer>(3l,1l, 1)
-        );
-
+            );
+                
+        Utils.log("Create RDD for vertices and edges");
         //Distribute a local Scala collection to form an RDD.
         JavaRDD<Tuple2<Object,Integer>> verticesRDD = ctx.parallelize(vertices);
         JavaRDD<Edge<Integer>> edgesRDD = ctx.parallelize(edges);
-
+        
         //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#apply-org.apache.spark.rdd.RDD-org.apache.spark.rdd.RDD-VD-org.apache.spark.storage.StorageLevel-org.apache.spark.storage.StorageLevel-scala.reflect.ClassTag-scala.reflect.ClassTag-
         //https://spark.apache.org/docs/latest/api/java/org/apache/spark/storage/StorageLevel.html
         //Construct a graph from a collection of vertices and edges with attributes. Duplicate vertices are picked arbitrarily and vertices found in the edge collection but not in the input vertices are assigned the default attribute.
+        Utils.log("Create Graph from vertices and edges");
         Graph<Integer,Integer> G = Graph.apply(verticesRDD.rdd(),edgesRDD.rdd(),1, StorageLevel.MEMORY_ONLY(), StorageLevel.MEMORY_ONLY(),
-                scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
-
+        scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
+        
+        Utils.log("Create graph operations' object");
         //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#GraphOps-org.apache.spark.graphx.Graph-scala.reflect.ClassTag-scala.reflect.ClassTag-
         GraphOps ops = new GraphOps(G, scala.reflect.ClassTag$.MODULE$.apply(Integer.class),scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
 
+        Utils.log("Run pregel over our graph with apply, scatter and gather functions");
         //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphOps.html#pregel-A-int-org.apache.spark.graphx.EdgeDirection-scala.Function3-scala.Function1-scala.Function2-scala.reflect.ClassTag-
         // https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/EdgeDirection.html
         Graph<Integer, Integer> output_graph = ops.pregel(Integer.MIN_VALUE, Integer.MAX_VALUE, EdgeDirection.Out(), new VProg(), new sendMsg(), new merge(), scala.reflect.ClassTag$.MODULE$.apply(Integer.class));
         
+        Utils.log("Get output graphs' vertices");
         //https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/Graph.html#vertices--
         VertexRDD<Integer> output_vertices = output_graph.vertices();
         Utils.print("Output graph has '" + output_vertices.count() + "' vertices");
