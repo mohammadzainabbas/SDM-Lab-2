@@ -16,7 +16,7 @@
             "request": "launch",
             "mainClass": "Main",
             "projectName": "spark_graphs_II",
-            "args": "exercise1"
+            "args": "exercise2"
         }
     ]
 }

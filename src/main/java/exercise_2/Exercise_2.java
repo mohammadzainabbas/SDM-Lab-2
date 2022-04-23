@@ -26,20 +26,41 @@ public class Exercise_2 {
     private static class VProg extends AbstractFunction3<Long,Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Long vertexID, Integer vertexValue, Integer message) {
-            return null;
+            System.out.println(" vertexID : "+vertexID+" vertex value : "+ vertexValue +" message : "+ message +"  In sendmsg");
+            if (message == Integer.MAX_VALUE) {             // superstep 0
+                System.out.println(vertexValue + " start - max value");
+                return vertexValue;
+            } else { 
+                System.out.println (" minimum value : "+Math.min(vertexValue,message));  // superstep > 0
+                return Math.min(vertexValue,message);
+            }
         }
     }
 
     private static class sendMsg extends AbstractFunction1<EdgeTriplet<Integer,Integer>, Iterator<Tuple2<Object,Integer>>> implements Serializable {
         @Override
         public Iterator<Tuple2<Object, Integer>> apply(EdgeTriplet<Integer, Integer> triplet) {
-            return null;
+            Tuple2<Object,Integer> sourceVertex = triplet.toTuple()._1();
+            System.out.println("sourceVertex : "+sourceVertex._2() +" edge value :"+ triplet.attr());
+            //EdgeTriplet<Integer,Integer> edge =;
+            
+            if (sourceVertex._2() == Integer.MAX_VALUE){
+                //if vertex isn't active do nothing
+                return JavaConverters.asScalaIteratorConverter(new ArrayList<Tuple2<Object,Integer>>().iterator()).asScala();
+
+            }
+            else {
+                // propagate source vertex value+ edge value
+                System.out.println(" source value : "+ sourceVertex._2+triplet.attr());
+                return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2+triplet.attr())).iterator()).asScala();
+            }
         }
     }
 
     private static class merge extends AbstractFunction2<Integer,Integer,Integer> implements Serializable {
         @Override
         public Integer apply(Integer o, Integer o2) {
+            System.out.println(" Integer o :"+o+ " Interger o2 : "+ o2);
             return null;
         }
     }
