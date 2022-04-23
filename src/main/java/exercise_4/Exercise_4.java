@@ -17,7 +17,7 @@ import java.util.List;
 public class Exercise_4 {
 	
 	public static void wikipedia(JavaSparkContext ctx, SQLContext sqlCtx) {
-
+		//https://spark.apache.org/docs/latest/api/java/org/apache/spark/graphx/GraphLoader.html#edgeListFile-org.apache.spark.SparkContext-java.lang.String-boolean-int-org.apache.spark.storage.StorageLevel-org.apache.spark.storage.StorageLevel-
 
 	}
 	
