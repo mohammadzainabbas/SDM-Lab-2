@@ -55,7 +55,6 @@ public class Exercise_2 {
                 System.out.println(" source value : "+ sourceVertex._2+triplet.attr());
                 return JavaConverters.asScalaIteratorConverter(Arrays.asList(new Tuple2<Object,Integer>(triplet.dstId(),sourceVertex._2+triplet.attr())).iterator()).asScala();
             }
-            
         }
     }
 
