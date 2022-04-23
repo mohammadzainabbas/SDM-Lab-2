@@ -15,8 +15,12 @@ public class Utils {
     public static void print(String text) {
 		System.out.println(text);
 	}
-    public static void log(String text) {
+
+	public static void log(String text) {
 		print("[ log ] " + text);
 	}
-
+	
+	public static void line_separator() {
+		print("\n----------------------------------\n");
+	}
 }
