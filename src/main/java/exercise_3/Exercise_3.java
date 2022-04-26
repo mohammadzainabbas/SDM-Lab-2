@@ -13,7 +13,6 @@ import scala.reflect.ClassTag$;
 import scala.runtime.AbstractFunction1;
 import scala.runtime.AbstractFunction2;
 import scala.runtime.AbstractFunction3;
-import shapeless.Tuple;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -27,7 +26,6 @@ import exercise_3.Vertex;
 public class Exercise_3 {
     
     // Initial value for pregel execution
-    // static final Tuple2<Integer, List<String>> INITIAL_VALUE = new Tuple2<Integer, List<String>>(Integer.MAX_VALUE, new ArrayList<String>());
     static final Vertex INITIAL_VALUE = new Vertex(Integer.MAX_VALUE);
     
     // Nodes' Labels 
