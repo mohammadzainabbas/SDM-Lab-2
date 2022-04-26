@@ -141,5 +141,4 @@ public class Exercise_2 {
                 Utils.print("Minimum cost to get from '" + srcLabel + "' to '" + descLabel + "' is " + cost);
             });
 	}
-	
 }
