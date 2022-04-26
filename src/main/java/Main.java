@@ -5,7 +5,6 @@ import exercise_4.Exercise_4;
 import exercise_4.Exercise_4_warmup;
 
 import org.apache.log4j.Level;
-import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.apache.spark.SparkConf;
 import org.apache.spark.SparkContext;
@@ -13,22 +12,15 @@ import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.sql.SQLContext;
 
 import exercise_1.Exercise_1;
-import utils.Utils;
 
 public class Main {
 
-	// static String HADOOP_COMMON_PATH = "SET THE ABSOLUTE PATH OF THE RESOURCE DIRECTORY WHERE THE WINUTILS IS LOCATED"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
-	static String HADOOP_COMMON_PATH = "/root/SDM-Lab-2/src/main/resources"; // "C:\\...\\SparkGraphXassignment\\src\\main\\resources"
-	
+	static String HADOOP_COMMON_PATH = "/root/SDM-Lab-2/src/main/resources";
+    
 	public static void main(String[] args) throws Exception {
-        Utils.print("Hi from main()");
-
-		System.setProperty("hadoop.home.dir", HADOOP_COMMON_PATH);
-
+        System.setProperty("hadoop.home.dir", HADOOP_COMMON_PATH);
 		SparkConf conf = new SparkConf().setAppName("SparkGraphs_II").setMaster("local[*]");
-        Utils.print("Before spark context");
         SparkContext sparkContext = new SparkContext(conf);
-        Utils.print("After spark context");
         JavaSparkContext ctx = new JavaSparkContext(sparkContext);
 		ctx.setCheckpointDir(Files.createTempDir().getAbsolutePath());
 		
@@ -57,7 +49,5 @@ public class Main {
         else {
 		    throw new Exception("Wrong exercise number");
         }
-
 	}
-
 }

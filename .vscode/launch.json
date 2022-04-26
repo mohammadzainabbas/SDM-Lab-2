@@ -16,7 +16,7 @@
             "request": "launch",
             "mainClass": "Main",
             "projectName": "spark_graphs_II",
-            "args": "exercise4"
+            "args": ["exercise4", "|", "tee", "/root/SDM-Lab-2/src/main/java/exercise_4/output.txt"]
         }
     ]
 }
