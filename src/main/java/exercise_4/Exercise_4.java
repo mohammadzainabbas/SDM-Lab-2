@@ -88,7 +88,7 @@ public class Exercise_4 {
 		// GraphFrame gf = graphFrame.pageRank().tol(0.01).resetProbability(0.15).run();
 		// GraphFrame gf = graphFrame.pageRank().resetProbability(0.15).maxIter(10).run();
 		
-		Utils.line_separator();
+		// Utils.line_separator();
 		
 		// gf.edges().show();
 		// gf.vertices().show();
