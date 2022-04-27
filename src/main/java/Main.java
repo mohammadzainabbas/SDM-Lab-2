@@ -49,5 +49,6 @@ public class Main {
         else {
 		    throw new Exception("Wrong exercise number");
         }
+        ctx.close();
 	}
 }
