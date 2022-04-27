@@ -1,0 +1,39 @@
+name: Exercise 4 (Warm up)
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths-ignore:
+      - '**.md'
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        java-version: ["11"]
+
+    steps:
+
+      - name: Checkout current repo
+        uses: actions/checkout@v3
+
+      - name: Setup JDK 11 (on "${{ matrix.os }}")
+        uses: actions/setup-java@v3
+        with:
+          java-version: ${{ matrix.java-version }}
+          distribution: 'temurin'
+          cache: maven
+
+      - name: Compile Project
+        run: mvn compile
+
+      - name: Run Project
+        run: sh scripts/build_n_run.sh exercise4_warmup
+        shell: bash
