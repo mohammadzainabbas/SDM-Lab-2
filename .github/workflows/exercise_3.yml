@@ -31,9 +31,6 @@ jobs:
           distribution: 'temurin'
           cache: maven
 
-      - name: Compile Project
-        run: mvn compile
-
-      - name: Run Project
+      - name: Build and Run Project
         run: sh scripts/build_n_run.sh exercise3
         shell: bash
