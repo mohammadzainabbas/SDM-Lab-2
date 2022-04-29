@@ -16,6 +16,7 @@
   * [GraphX](#graphx)
   * [Pregel](#pregel)
 - [Setup](#setup)
+  * [Mac](#mac)
 ---
 
 <a id="introduction" />
@@ -47,3 +48,65 @@ Pregel, originally developed by Google, is essentially a message-passing interfa
 <a id="setup" />
 
 #### 2. Setup
+
+
+Before starting, you may need to setup your machine first. Please follow the below mentioned guides to setup Spark and Maven on your machine.
+
+<a id="mac" />
+
+##### 2.1. Mac
+
+We have created a setup script which will setup brew, apache-spark and conda enviornment. If you are on Mac machine, you can run the following commands:
+
+```bash
+git clone https://github.com/mohammadzainabbas/SDM-Lab-2.git
+cd SDM-Lab-2 && sh scripts/setup.sh
+```
+
+<a id="linux" />
+
+##### 2.2. Linux
+
+If you are on Linux, you need to install [Apache Spark](https://spark.apache.org) by yourself. You can follow this [helpful guide](https://computingforgeeks.com/how-to-install-apache-spark-on-ubuntu-debian/) to install `apache spark`.
+
+We also recommend you to install _conda_ on your machine. You can setup conda from [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
+
+After you have conda, create new enviornment via:
+
+```bash
+conda create -n spark_env python=3.8
+```
+
+> Note: We are using Python3.8 because spark doesn't support Python3.9 and above (at the time of writing this)
+
+Activate your enviornment:
+
+```bash
+conda activate spark_env
+```
+
+Now, you need to install _pyspark_:
+
+```bash
+pip install pyspark
+```
+
+If you are using bash:
+
+```bash
+
+echo "export PYSPARK_DRIVER_PYTHON=$(which python)" >> ~/.bashrc
+echo "export PYSPARK_DRIVER_PYTHON_OPTS=''" >> ~/.bashrc
+. ~/.bashrc
+
+```
+
+And if you are using zsh:
+
+```zsh
+
+echo "export PYSPARK_DRIVER_PYTHON=$(which python)" >> ~/.zshrc
+echo "export PYSPARK_DRIVER_PYTHON_OPTS=''" >> ~/.zshrc
+. ~/.zshrc
+
+```
