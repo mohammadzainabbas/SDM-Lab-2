@@ -66,6 +66,15 @@ install_apache_spark() {
     fi
 }
 
+install_mvn() {
+    if [ ! $(type -p mvn) ]; then
+        error "'mvn' not found. Installing it now ..."
+        brew install mvn
+    else
+        log "'mvn' found ..."
+    fi
+}
+
 conda_init() {
     conda init --all || error "Unable to conda init ..."
     if [[ $SHELL == *"zsh"* ]]; then
@@ -96,6 +105,7 @@ log "Starting Setup Service"
 
 install_brew
 install_apache_spark
+install_mvn
 install_conda
 create_conda_env
 
