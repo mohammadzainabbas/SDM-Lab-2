@@ -19,6 +19,9 @@
   * [Mac](#mac)
   * [Linux](#linux)
 - [Setup](#setup)
+- [Run](#run)
+  * [VS Code](#vscode)
+  * [Terminal](#terminal)
 ---
 
 <a id="introduction" />
@@ -115,3 +118,31 @@ echo "export PYSPARK_DRIVER_PYTHON_OPTS=''" >> ~/.zshrc
 
 ---
 
+<a id="run" />
+
+#### 3. Run
+
+Since, this is a typical maven project, you can run it however you'd like to run a maven project. To facilitate you, we provide you two ways to run this project.
+
+<a id="vscode" />
+
+#### 3.1. VS Code
+
+In you are using VS Code, change the `args` in the `Launch Main` configuration in `launch.json` file located at `.vscode` directory.
+
+See the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/zain/src/main/java/Main.java) for the supported arguments.
+
+
+<a id="terminal" />
+
+#### 3.2. Terminal
+
+Just run the following with the supported arguments:
+
+```bash
+sh scripts/build_n_run.sh exercise1
+```
+
+> Note: `exercise1` here is the argument which you'd need to run the first exercise
+
+Again, you can check the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/zain/src/main/java/Main.java) for the supported arguments.
