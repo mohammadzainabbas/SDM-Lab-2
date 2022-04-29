@@ -17,6 +17,8 @@
   * [Pregel](#pregel)
 - [Setup](#setup)
   * [Mac](#mac)
+  * [Linux](#linux)
+- [Setup](#setup)
 ---
 
 <a id="introduction" />
@@ -56,7 +58,7 @@ Before starting, you may need to setup your machine first. Please follow the bel
 
 ##### 2.1. Mac
 
-We have created a setup script which will setup brew, apache-spark and conda enviornment. If you are on Mac machine, you can run the following commands:
+We have created a setup script which will setup brew, apache-spark, maven and conda enviornment. If you are on Mac machine, you can run the following commands:
 
 ```bash
 git clone https://github.com/mohammadzainabbas/SDM-Lab-2.git
@@ -67,7 +69,7 @@ cd SDM-Lab-2 && sh scripts/setup.sh
 
 ##### 2.2. Linux
 
-If you are on Linux, you need to install [Apache Spark](https://spark.apache.org) by yourself. You can follow this [helpful guide](https://computingforgeeks.com/how-to-install-apache-spark-on-ubuntu-debian/) to install `apache spark`.
+If you are on Linux, you need to install [Apache Spark](https://spark.apache.org) by yourself. You can follow this [helpful guide](https://computingforgeeks.com/how-to-install-apache-spark-on-ubuntu-debian/) to install `apache spark`. You can install maven via this [guide](https://maven.apache.org/install.html).
 
 We also recommend you to install _conda_ on your machine. You can setup conda from [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html)
 
@@ -110,3 +112,6 @@ echo "export PYSPARK_DRIVER_PYTHON_OPTS=''" >> ~/.zshrc
 . ~/.zshrc
 
 ```
+
+---
+
