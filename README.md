@@ -18,7 +18,6 @@
 - [Setup](#setup)
   * [Mac](#mac)
   * [Linux](#linux)
-- [Setup](#setup)
 - [Run](#run)
   * [VS Code](#vscode)
   * [Terminal](#terminal)
