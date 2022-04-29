@@ -20,9 +20,12 @@
 
 #### 1. Introduction
 
+`GraphX` is a new component in Spark for graphs and graph-parallel computation. At a high level, GraphX extends the Spark RDD by introducing a new Graph abstraction: a directed multigraph with properties attached to each vertex and edge.
+
 This repo is all about what we have done in SDM lab 2 during our semester at UPC. As a BDMA student, we really need to know how to deal with semantics (a.k.a metadata about the data) in case of big data ecosystems. Semantics play a key role when analysing a large corpora of data in today's era. 
 
 In this course, we will explore about the concepts of SDM.
+
 
 ---
 
