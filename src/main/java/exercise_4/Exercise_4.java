@@ -44,29 +44,31 @@ public class Exercise_4 {
 		
 		Utils.line_separator();
 		
-		// For dumping factor
 		List<Row> timeList = new ArrayList<Row>();
 		StructType outputSchema = new StructType(new StructField[] {
-			new StructField("dumping_factor", DataTypes.DoubleType, false, new MetadataBuilder().build()),
+			new StructField("damping_factor", DataTypes.DoubleType, false, new MetadataBuilder().build()),
+			new StructField("reset_probability (1 - damping_factor)", DataTypes.DoubleType, false, new MetadataBuilder().build()),
 			new StructField("maxIter", DataTypes.IntegerType, false, new MetadataBuilder().build()),
 			new StructField("time", DataTypes.LongType, false, new MetadataBuilder().build())
 		});
+		// For damping factor
 		IntStream.range(1, 20).forEach(i -> {
 			// For max iterations
 			IntStream.range(1, 5).forEach(j -> {
-				Double dumpFactor = i * 0.05;
+				Double dampFactor = i * 0.05;
+				Double resetProbability = 1 - dampFactor;
 				Integer maxIteration = j * 5;
 
 				Long startTime = System.currentTimeMillis();
-				GraphFrame gf = graphFrame.pageRank().resetProbability(dumpFactor).maxIter(maxIteration).run();
+				GraphFrame gf = graphFrame.pageRank().resetProbability(resetProbability).maxIter(maxIteration).run();
 				Long endTime = System.currentTimeMillis();
 				
 				Long timeTaken = endTime - startTime;
-				timeList.add(RowFactory.create(dumpFactor, maxIteration, timeTaken));
+				timeList.add(RowFactory.create(dampFactor, resetProbability, maxIteration, timeTaken));
 
 				Dataset<Row> topVertices = gf.vertices().sort(org.apache.spark.sql.functions.desc("pagerank"));
 				
-				String log = "dumping factor: '" + dumpFactor + "' maxIter: '" + maxIteration + "' time: '" + timeTaken + "' msec\n\n";
+				String log = "damping factor: '" + dampFactor + "' maxIter: '" + maxIteration + "' time: '" + timeTaken + "' msec\n\n";
 				Utils.print(log);
 				topVertices.show(10);
 				Utils.line_separator();
