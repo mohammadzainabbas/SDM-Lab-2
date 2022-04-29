@@ -35,7 +35,7 @@ __Apache Spark__ analysis of big data became essential easier. Spark brings a lo
 
 This repository serves as a starting point for working with _Spark GraphX API_. As part of our SDM lab, we'd be focusing on getting a basic idea about how to work with `pregel` and get a hands-on experience with distributed processing of large graph.
 
-<a id="graphx" />
+<a id="pregel" />
 
 ##### 1.2 Pregel
 
