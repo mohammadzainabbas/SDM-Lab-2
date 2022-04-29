@@ -126,7 +126,7 @@ Since, this is a typical maven project, you can run it however you'd like to run
 
 <a id="vscode" />
 
-#### 3.1. VS Code
+##### 3.1. VS Code
 
 In you are using VS Code, change the `args` in the `Launch Main` configuration in `launch.json` file located at `.vscode` directory.
 
@@ -135,7 +135,7 @@ See the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/main/sr
 
 <a id="terminal" />
 
-#### 3.2. Terminal
+##### 3.2. Terminal
 
 Just run the following with the supported arguments:
 
