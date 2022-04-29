@@ -130,7 +130,7 @@ Since, this is a typical maven project, you can run it however you'd like to run
 
 In you are using VS Code, change the `args` in the `Launch Main` configuration in `launch.json` file located at `.vscode` directory.
 
-See the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/zain/src/main/java/Main.java) for the supported arguments.
+See the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/main/src/main/java/Main.java) for the supported arguments.
 
 
 <a id="terminal" />
@@ -145,4 +145,4 @@ sh scripts/build_n_run.sh exercise1
 
 > Note: `exercise1` here is the argument which you'd need to run the first exercise
 
-Again, you can check the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/zain/src/main/java/Main.java) for the supported arguments.
+Again, you can check the [main class](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/main/src/main/java/Main.java) for the supported arguments.
