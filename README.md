@@ -15,6 +15,7 @@
 - [Introduction](#introduction)
   * [GraphX](#graphx)
   * [Pregel](#pregel)
+- [Setup](#setup)
 ---
 
 <a id="introduction" />
@@ -28,7 +29,7 @@ __Apache Spark__ analysis of big data became essential easier. Spark brings a lo
 
 <a id="graphx" />
 
-##### 1.1 GraphX
+##### 1.1. GraphX
 
 [GraphX](https://spark.apache.org/docs/latest/graphx-programming-guide.html) is a new component in Spark for graphs and graph-parallel computation. At a high level, GraphX extends the Spark RDD by introducing a new Graph abstraction: a directed multigraph with properties attached to each vertex and edge.
 
@@ -37,9 +38,12 @@ This repository serves as a starting point for working with _Spark GraphX API_. 
 
 <a id="pregel" />
 
-##### 1.2 Pregel
+##### 1.2. Pregel
 
 Pregel, originally developed by Google, is essentially a message-passing interface which facilitates the processing of large-scale graphs. _Apache Spark's GraphX_ module provides the [Pregel API](https://spark.apache.org/docs/latest/graphx-programming-guide.html#pregel-api) which allow us to write distributed graph programs / algorithms. For more details, kindly check out the [original paper](https://github.com/mohammadzainabbas/SDM-Lab-2/blob/main/docs/pregel.pdf)
 
 ---
 
+<a id="setup" />
+
+#### 2. Setup
